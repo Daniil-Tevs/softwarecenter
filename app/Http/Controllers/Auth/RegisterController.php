@@ -15,6 +15,6 @@
 			if ($user = User::query()->create($request->validated()))
 				return response()->json(['token' => $user->createToken('auth_token')->plainTextToken]);
 
-			return response()->json(['error' => "Doesn't create user"], 422);
+			return response()->json(['error' => __('errors.create')], 422);
 		}
 	}
