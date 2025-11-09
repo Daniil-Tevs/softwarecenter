@@ -22,5 +22,6 @@
 
 		Route::controller(TaskController::class)->prefix('tasks')->name('projects.')->group(function () {
 			Route::get('{task}', 'show')->name('show');
+			Route::put('{task}', 'update')->name('update');
 		});
 	});
