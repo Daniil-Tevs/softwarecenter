@@ -37,6 +37,14 @@
 				return response()->json(['success' => true, 'id' => $task->id]);
 			}
 
-			return response()->json(['success' => false, 'error' => __('errors.create')], 422);
+			return response()->json(['success' => false, 'error' => __('errors.update')], 422);
+		}
+
+		public function destroy(Task $task)
+		{
+			if ($task->delete())
+				return response()->json(['success' => true]);
+
+			return response()->json(['success' => false, 'error' => __('errors.delete')], 422);
 		}
 	}
