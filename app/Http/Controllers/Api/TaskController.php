@@ -14,11 +14,7 @@
 		public function show(ShowRequest $request, Task $task): JsonResponse
 		{
 			$task->getMedia();
-			$task->files = $task->media->map(fn($media) => [
-				'name' => $media->name,
-				'url' => $media->getUrl(),
-			]);
-			unset($task['media']);
+			$task->file = $task->media->map(fn($media) => $media->getUrl())->first();
 
 			return response()->json($task);
 		}
@@ -31,11 +27,11 @@
 
 			if ($task->update($data)) {
 				if ($data['is_remove_file'] ?? false)
-					$task->clearMediaCollection('tasks');
+					$task->clearMediaCollection();
 
 				if ($request->hasFile('file')) {
-					$task->clearMediaCollection('tasks');
-					$task->addMedia($request->file('file'))->toMediaCollection('tasks');
+					$task->clearMediaCollection();
+					$task->addMedia($request->file('file'))->toMediaCollection();
 				}
 
 				return response()->json(['success' => true, 'id' => $task->id]);

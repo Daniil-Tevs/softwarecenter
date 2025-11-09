@@ -40,14 +40,8 @@
 				->when($status = $request->validated('status'), fn(Builder $query) => $query->where('status', $status))
 				->with('performer:id,email', 'media')->latest()->get();
 
-			$tasks = $tasks->map(function ($task) {
-				$task->files = $task->media->map(fn($media) => [
-					'name' => $media->name,
-					'url' => $media->getUrl(),
-				]);
-
-				unset($task['media']);
-
+			$tasks->transform(function ($task) {
+				$task->file = $task->media->map(fn($media) => $media->getUrl())->first();
 				return $task;
 			});
 
@@ -59,9 +53,8 @@
 			$data = $request->validated();
 			$task = $project->tasks()->create($data);
 
-			if ($task && $request->hasFile('file')) {
-				$task->addMedia($request->file('file'))->toMediaCollection('tasks');
-			}
+			if ($task && $request->hasFile('file'))
+				$task->addMedia($request->file('file'))->toMediaCollection();
 
 			if ($task) return response()->json(['success' => true, 'id' => $task->id]);
 

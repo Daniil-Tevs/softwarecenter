@@ -21,8 +21,9 @@
 		];
 
 		protected $hidden = [
+			'media',
 			'project_id',
-			'performer_id'
+			'performer_id',
 		];
 
 		public function performer(): BelongsTo
