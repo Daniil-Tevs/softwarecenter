@@ -17,6 +17,11 @@
 			'performer_id',
 		];
 
+		protected $hidden = [
+			'project_id',
+			'performer_id'
+		];
+
 		public function performer(): BelongsTo
 		{
 			return $this->belongsTo(User::class, 'performer_id');

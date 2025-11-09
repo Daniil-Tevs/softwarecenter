@@ -14,6 +14,8 @@
 	Route::middleware('auth:sanctum')->group(function () {
 		Route::controller(ProjectController::class)->prefix('projects')->name('projects.')->group(function () {
 			Route::post('/', 'store')->name('store');
+
+			Route::get('{project}/tasks', 'tasks')->name('tasks');
 			Route::post('{project}/tasks', 'storeTasks')->name('tasks.store');
 		});
 	});
