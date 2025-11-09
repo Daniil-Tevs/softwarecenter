@@ -10,7 +10,7 @@
 	{
 		public function authorize(): bool
 		{
-			return auth()->check() && $this->project && $this->project->owner_id === auth()->id();
+			return auth()->check();
 		}
 
 		public function rules(): array

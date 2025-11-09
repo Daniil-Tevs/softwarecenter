@@ -11,8 +11,7 @@
 	{
 		public function authorize(): bool
 		{
-			return auth()->check() && $this->project &&
-				($this->project->owner_id === auth()->id() || $this->project->participants()->where('user_id', auth()->id())->exists());
+			return auth()->check();
 		}
 
 		public function rules(): array

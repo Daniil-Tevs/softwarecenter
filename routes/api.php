@@ -16,12 +16,13 @@
 		Route::controller(ProjectController::class)->prefix('projects')->name('projects.')->group(function () {
 			Route::post('/', 'store')->name('store');
 
-			Route::get('{project}/tasks', 'tasks')->name('tasks');
-			Route::post('{project}/tasks', 'storeTasks')->name('tasks.store');
+			Route::get('{project}/tasks', 'tasks')->name('tasks')->middleware('project.role:owner,participant');
+			Route::post('{project}/tasks', 'storeTasks')->name('tasks.store')->middleware('project.role:owner');;
 		});
 
 		Route::controller(TaskController::class)->prefix('tasks')->name('projects.')->group(function () {
-			Route::get('{task}', 'show')->name('show');
-			Route::put('{task}', 'update')->name('update');
+			Route::get('{task}', 'show')->name('show')->middleware('project.role:owner,participant');
+			Route::put('{task}', 'update')->name('update')->middleware('project.role:owner,participant');
+			Route::delete('{task}', 'destroy')->name('destroy')->middleware('project.role:owner');
 		});
 	});

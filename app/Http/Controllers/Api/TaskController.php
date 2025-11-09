@@ -11,7 +11,7 @@
 
 	class TaskController extends Controller
 	{
-		public function show(ShowRequest $request, Task $task): JsonResponse
+		public function show(Task $task): JsonResponse
 		{
 			$task->getMedia();
 			$task->file = $task->media->map(fn($media) => $media->getUrl())->first();
