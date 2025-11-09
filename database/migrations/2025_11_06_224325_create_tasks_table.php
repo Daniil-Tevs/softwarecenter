@@ -17,7 +17,6 @@
 
 				$table->string('title');
 				$table->text('description')->nullable();
-				$table->string('file')->nullable();
 
 				$table->timestamp('finished_at')->nullable();
 

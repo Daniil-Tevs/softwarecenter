@@ -38,21 +38,33 @@
 				->when($finishedAt = $request->validated('finished_at'), fn(Builder $query) => $query->whereBetween('finished_at', [Carbon::parse($finishedAt)->startOfDay(), Carbon::parse($finishedAt)->endOfDay()]))
 				->when($performer = $request->validated('performer'), fn(Builder $query) => $query->where('performer_id', $performer))
 				->when($status = $request->validated('status'), fn(Builder $query) => $query->where('status', $status))
-				->with('performer:id,email')->latest()->get();
+				->with('performer:id,email', 'media')->latest()->get();
+
+			$tasks = $tasks->map(function ($task) {
+				$task->files = $task->media->map(fn($media) => [
+					'name' => $media->name,
+					'url' => $media->getUrl(),
+				]);
+
+				unset($task['media']);
+
+				return $task;
+			});
+
 			return response()->json($tasks);
 		}
 
 		public function storeTasks(TaskStoreRequest $request, Project $project): JsonResponse
 		{
 			$data = $request->validated();
+			$task = $project->tasks()->create($data);
 
-			if ($request->hasFile('file')) {
-				$path = $request->file('file')->store('tasks', 'public');
-				$data['file'] = asset('storage/' . $path);
+			if ($task && $request->hasFile('file')) {
+				$task->addMedia($request->file('file'))->toMediaCollection('tasks');
 			}
 
-			if ($task = $project->tasks()->create($data))
-				return response()->json(['id' => $task->id]);
-			return response()->json(['error' => __('errors.create')], 422);
+			if ($task) return response()->json(['success' => true, 'id' => $task->id]);
+
+			return response()->json(['success' => false, 'error' => __('errors.create')], 422);
 		}
 	}
