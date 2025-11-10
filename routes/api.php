@@ -20,7 +20,7 @@
 			Route::post('{project}/tasks', 'storeTasks')->name('tasks.store')->middleware('project.role:owner');;
 		});
 
-		Route::controller(TaskController::class)->prefix('tasks')->name('projects.')->group(function () {
+		Route::controller(TaskController::class)->prefix('tasks')->name('tasks.')->group(function () {
 			Route::get('{task}', 'show')->name('show')->middleware('project.role:owner,participant');
 			Route::put('{task}', 'update')->name('update')->middleware('project.role:owner,participant');
 			Route::delete('{task}', 'destroy')->name('destroy')->middleware('project.role:owner');
